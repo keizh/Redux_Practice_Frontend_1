@@ -7,8 +7,9 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { useDispatch } from "react-redux";
-import { addBook } from "../features/Book/BookSlice";
-import React from "react";
+import { addBook, updateBook } from "../features/Book/BookSlice";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const bookDATA = z.object({
   bookName: z.string(),
@@ -17,6 +18,10 @@ const bookDATA = z.object({
 });
 
 export default function Form() {
+  const location = useLocation();
+  const state = location.state;
+  console.log(`state`, state);
+  console.log(`location`, location);
   const dispatch = useDispatch();
   const initialData = {
     bookName: "",
@@ -24,9 +29,20 @@ export default function Form() {
     bookGenre: "",
   };
   const [book, setBook] = React.useState(initialData);
+
+  useEffect(() => {
+    if (state != null) {
+      setBook(state);
+    }
+  }, []);
+
   const SubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(addBook(book));
+    if (state != null) {
+      dispatch(updateBook(book));
+    } else {
+      dispatch(addBook(book));
+    }
     const zod = bookDATA.safeParse(book);
     if (zod.success === true) {
       console.log(book);

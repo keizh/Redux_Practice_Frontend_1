@@ -12,7 +12,9 @@ import { useEffect } from "react";
 import { fetchBooks } from "../features/Book/BookSlice";
 import { ListItem } from "@material-tailwind/react";
 import { deleteBook } from "../features/Book/BookSlice";
+import { useNavigate } from "react-router-dom";
 const ListOfBooks = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { error, status, Books } = useSelector((state) => state.Book);
   useEffect(() => {
@@ -42,12 +44,18 @@ const ListOfBooks = () => {
                   {book.bookGenre}
                 </ListItem>
 
-                <Button
-                  color="red"
-                  onClick={() => dispatch(deleteBook(book._id))}
-                >
-                  Delete
-                </Button>
+                <div className="flex items-center gap-5">
+                  <Button
+                    color="red"
+                    onClick={() => dispatch(deleteBook(book._id))}
+                  >
+                    Delete
+                  </Button>
+
+                  <Button onClick={() => navigate("/addBook", { state: book })}>
+                    Edit
+                  </Button>
+                </div>
               </CardBody>
             </Card>
           ))}
